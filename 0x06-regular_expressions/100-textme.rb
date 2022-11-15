@@ -1,3 +1,3 @@
 #!/usr/bin/env ruby
-# A regular expression that is matches a given pattern
-puts ARGV[0].scan(/\[from:(.*?)\]\s\[to:(.*?)\]\s\[flags:(.*?)\]/).join(',')
+ptn = /(?:(?<=from:)(?:\p{L}+|\+?\d+)|(?<=to:)(?:\p{L}+|\+?\d*)|(?<=flags:)(?:-?\d+:?)*)/
+puts ARGV[0].scan(ptn).join(',')
