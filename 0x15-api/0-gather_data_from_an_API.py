@@ -1,25 +1,31 @@
 #!/usr/bin/python3
-"""Script that uses REST API"""
+"""Accessing a REST API for todo lists of employees"""
+
 import requests
 import sys
 
-if __name__ == "__main__":
-    if len(sys.argv) == 2 and sys.argv[1].isdigit():
-        args = {"id": sys.argv[1]}
-        users = requests.get("https://jsonplaceholder.typicode.com/users",
-                             params=args).json()
-        args = {"userId": sys.argv[1]}
-        todos = requests.get("https://jsonplaceholder.typicode.com/todos",
-                             params=args).json()
-        todos_len = 0
-        todos_arr = []
-        for i in todos:
-            if i.get("completed"):
-                todos_arr.append(i)
-                todos_len += 1
 
-        print("Employee {} is done with tasks({}/{}):".format(
-              users[0].get("name"), todos_len, len(todos)))
+if __name__ == '__main__':
+    employeeId = sys.argv[1]
+    baseUrl = "https://jsonplaceholder.typicode.com/users"
+    url = baseUrl + "/" + employeeId
 
-        for i in todos_arr:
-            print("\t {}".format(i.get("title")))
+    response = requests.get(url)
+    employeeName = response.json().get('name')
+
+    todoUrl = url + "/todos"
+    response = requests.get(todoUrl)
+    tasks = response.json()
+    done = 0
+    done_tasks = []
+
+    for task in tasks:
+        if task.get('completed'):
+            done_tasks.append(task)
+            done += 1
+
+    print("Employee {} is done with tasks({}/{}):"
+          .format(employeeName, done, len(tasks)))
+
+    for task in done_tasks:
+        print("\t {}".format(task.get('title')))
